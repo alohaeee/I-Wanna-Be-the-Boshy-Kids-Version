@@ -77,7 +77,7 @@ public:
         EntitiesVector[String].get().addGroup(groupString);
 
 
-        EntitiesVector[Player].get().addComponent<MainAction>(EntitiesVector[String].get());
+        EntitiesVector[String].get().addComponent<MainAction>(EntitiesVector[Player].get());
 
         ////////////////
         ////Fishies
@@ -95,7 +95,7 @@ public:
             std::string Collider_Tag = "Fish_"+std::to_string(Last_Fish - Fish_ID + 1);
             EntitiesVector[Fish_ID].get().addComponent<ColliderComponent>(Collider_Tag, ColliderUpdateFunc::TransfromFISHCollider);
             EntitiesVector[Fish_ID].get().getComponent<ColliderComponent>().MakeCollPair("Wall",Collision::reAABB, ColHandler::ReRandPosFishies);
-            EntitiesVector[Fish_ID].get().getComponent<ColliderComponent>().MakeCollPair("String",Collision::AABB, ColHandler::Empty);
+            EntitiesVector[Fish_ID].get().getComponent<ColliderComponent>().MakeCollPair("String",Collision::AABB, ColHandler::ChainFishPosition);
             EntitiesVector[Fish_ID].get().addComponent<SpawnComponent>().RandPos();
             EntitiesVector[Fish_ID].get().addGroup(groupFishies);
         }

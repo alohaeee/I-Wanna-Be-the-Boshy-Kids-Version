@@ -1,11 +1,15 @@
 #pragma once
 
-#include "Components.h"
+#include "ECS/ECS.h"
+#include "ECS/TransformComponent.h"
+#include "ECS/SpriteComponent.h"
 #include <SDL2/SDL.h>
-#include "Collision.h"
 #include <string>
 #include <functional>
 #include <tuple>
+#include <map>
+
+struct ColliderComponent;
 
 using COLLISON_FUNC = std::function<bool(ColliderComponent&,ColliderComponent&)>;
 using COLL_HANDLER_FUNC = std::function<void(Entity&,Entity&)>;

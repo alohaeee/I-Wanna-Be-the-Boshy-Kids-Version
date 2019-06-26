@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Components.h"
+#include "ECS/ECS.h"
+#include "ECS/TransformComponent.h"
 #include "../Vector2D.h"
 
 

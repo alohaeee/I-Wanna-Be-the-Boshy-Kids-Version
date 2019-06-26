@@ -1,6 +1,10 @@
 #pragma once
 
-#include "Components.h"
+#include "ECS/ECS.h"
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
+#include "Game.h"
+
 #include <string>
 
 struct KeyboardComponent : public Component

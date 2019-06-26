@@ -1,8 +1,8 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include "ECS/ECS.h"
 #include "ECS/ColliderComponent.h"
 
-class Entity;
 
 namespace Collision
 {
@@ -22,4 +22,5 @@ namespace ColHandler
     void Empty(Entity& Left, Entity& Right);
     void LeftVelocityZero(Entity& Left, Entity& Right);
     void ReRandPosFishies(Entity& Left, Entity& Right);
+    void ChainFishPosition(Entity& Left, Entity& Right);
 }

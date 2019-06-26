@@ -7,7 +7,6 @@
 #include "MyException.h"
 
 
-class ColliderComponent;
 
 class Game
 {

@@ -1,5 +1,6 @@
 #pragma once
-#include "Components.h"
+#include "ECS.h"
+#include "TransformComponent.h"
 #include "../TextureManager.h"
 #include "../Animation.h"
 #include <SDL2/SDL.h>

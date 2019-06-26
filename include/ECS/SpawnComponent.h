@@ -1,5 +1,8 @@
 #pragma once
-#include "Components.h"
+#include "ECS/ECS.h"
+#include "ECS/SpriteComponent.h"
+#include "ECS/TransformComponent.h"
+#include "Game.h"
 #include <random>
 
 
@@ -46,7 +49,6 @@ public:
             }
             else 
             {
-                std::cout << "ALLO" << std::endl;
                 transform->position.x = 0.0f-transform->scale*transform->width;
                 transform->velocity.x = 1;
                 sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
