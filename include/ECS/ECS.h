@@ -7,10 +7,12 @@
 #include <algorithm>
 
 
+
 //pre-declaration 
 class Component;
 class Entity;
 class Manager;
+class SceneManager;
 
 //type routine
 using ComponentID = std::size_t;
@@ -57,6 +59,7 @@ public:
     virtual void draw() {};
     virtual ~Component() {};
     bool freeze = false;
+    bool isActive = true;
 };
 
 
@@ -68,25 +71,35 @@ class Entity
 {
 private:
     bool active = true;
-    Manager& manager;
+    
     ComponentUniquePtrVector components;
 
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
     GroupBitSet groupBitSet;
 public:
-    Entity(Manager &manager) : manager(manager) {};
+    Manager& manager;
+    SceneManager& sceneManager;
+    Entity(Manager &manager,SceneManager& sceneManager) : manager(manager) , sceneManager(sceneManager) {};
+    ~Entity()
+    {
+        componentBitSet.reset();
+        components.clear();
+    }
     void update()
     {
         for(auto &c : components) 
         {
-            if(!c->freeze)
+            if(!c->freeze && c->isActive)
                 c->update();
         }
     }
     void draw()
     {
-        for(auto &c : components) c->draw();
+        for(auto &c : components) {
+            if(c->isActive)
+            c->draw();
+        }
     }
     bool isActive() const
     {
@@ -95,6 +108,7 @@ public:
     void destroy()
     {
         active=false;
+        
     }
     bool hasGroup(Group mGroup) const
     {
@@ -135,6 +149,35 @@ public:
         }
         return *static_cast<T*>(nullptr);
     }
+
+    void FreezeEntity()
+    {
+        for(auto &c: components)
+        {
+            c->freeze=true;
+        }
+    }
+    void UnFreezeEntity()
+    {
+        for(auto &c:components)
+        {
+            c->freeze=false;
+        }
+    }
+    void Hold()
+    {
+        for(auto &c: components)
+        {
+            c->isActive=false;
+        }
+    }
+    void unHold()
+    {
+        for(auto &c: components)
+        {
+            c->isActive=true;
+        }
+    }
 };
 
 //Unique pointer vector for safely code
@@ -145,9 +188,14 @@ using GroupedEntitiesArray = std::array<std::vector<Entity*> , maxGroups>;
 class Manager
 {
 private:
-    EntitiesUniquePtrVector entities;
+    
     GroupedEntitiesArray groupedEntities;
+    EntitiesUniquePtrVector entities;
+    SceneManager& sceneManager;
 public:
+
+    Manager() = delete;
+    Manager(SceneManager& sceneManager) : sceneManager(sceneManager) {}
     void update()
     {
         for(auto & e: entities)
@@ -200,7 +248,7 @@ public:
 
     Entity& addEntity()
     {
-        Entity *e = new Entity(*this);
+        Entity *e = new Entity(*this,sceneManager);
         std::unique_ptr<Entity> uPtr{ e };
         
         entities.emplace_back(std::move(uPtr));
@@ -209,7 +257,24 @@ public:
 
     void destroy()
     {
-        entities.clear();
+        for(auto&e : entities)
+        {
+            e->destroy();
+        }
+    }
+    void freezeALL()
+    {
+        for(auto&e: entities)
+        {
+            e->FreezeEntity();
+        }
+    }
+    void unFreezeALL()
+    {
+        for(auto&e: entities)
+        {
+            e->UnFreezeEntity();
+        }
     }
 };
 

@@ -5,7 +5,11 @@
 #include "SpriteComponent.h"
 #include "KeyboardComponent.h"
 #include "ColliderComponent.h"
-#include "TextComponent.h"
 #include "SpawnComponent.h"
 #include "ActionComponent.h"
-
+#include "LabelInterface.h"
+#include "MenuController.h"
+#include "PlayerNameEvent.h"
+#include "TimerComponent.h"
+#include "ScoreComponent.h"
+#include "SubMenuController.h"

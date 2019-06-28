@@ -1,6 +1,6 @@
 #include "ECS/ColliderComponent.h"
 
-std::map<std::string,std::reference_wrapper<ColliderComponent>> ColliderComponent::colliders;
+std::map<std::string,ColliderComponent*> ColliderComponent::colliders;
 
 void ColliderUpdateFunc::TransfromBasicCollider(ColliderComponent &CollComp)
 {

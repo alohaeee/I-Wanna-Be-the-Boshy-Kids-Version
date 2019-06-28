@@ -3,8 +3,9 @@
 SDL_Texture* TextureManager::LoadTexture(const char* path)
 {
     SDL_Surface *tempSurface= IMG_Load(path);
+    if(!tempSurface)std::cout << SDL_GetError() << std::endl;
     SDL_Texture *tex = SDL_CreateTextureFromSurface(Game::renderer,tempSurface);
-    if(tex == NULL) std::cout << "AAA BLYAT" << std::endl;
+    if(tex == NULL) std::cout << "AAA BLYAT\t" << SDL_GetError() << std::endl;
     SDL_FreeSurface(tempSurface);
 
     return tex;

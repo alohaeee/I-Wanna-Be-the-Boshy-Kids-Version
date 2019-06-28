@@ -44,7 +44,7 @@ public:
     };
     ~SpriteComponent()
     {
-        SDL_DestroyTexture(texture);
+        if(texture) SDL_DestroyTexture(texture);
     }
 
     void setAnim(std::string animName,int index,int frames, int speed)

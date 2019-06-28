@@ -5,13 +5,12 @@
 #include <iostream>
 #include <vector>
 #include "MyException.h"
+#include "ScoreClass.h"
 
 
 
 class Game
 {
-private:
-    bool isRunning;
 public:
     static SDL_Window *window;
     Game();
@@ -25,8 +24,9 @@ public:
     void destroy();
     bool running() const;
 
-
+    static bool isRunning;
     static SDL_Renderer *renderer;
     static SDL_Event event;
+    static ScoreClass score_table;
 };
 

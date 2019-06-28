@@ -6,18 +6,17 @@
 
 #include "Scene/SceneHeader.h"
 
-
+SceneManager sceneManager;
 
 //Entity manager
-//Manager manager;
-Manager *manager = new Manager();
+Manager *manager = new Manager(sceneManager);
+
 //static member init
 SDL_Window *Game::window = nullptr;
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
-
-//Scene Manager
-SceneManager sceneManager;
+ScoreClass Game::score_table("inf/score_table.txt");
+bool Game::isRunning = true;
 
 
 
@@ -70,6 +69,7 @@ void Game::init(const char* title, int w, int h, bool fullscreen)
         SDL_FreeSurface(icon);
 
         
+        sceneManager.addScene<Scene_Menu>(manager);
         sceneManager.addScene<Scene_Game>(manager);
         sceneManager.changeActiveScene(0);
        
@@ -94,6 +94,7 @@ void Game::handleEvent()
             break;
         
     } 
+    sceneManager.event();
 }
 
 

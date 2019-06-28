@@ -34,12 +34,16 @@ struct ColliderComponent : public Component
 
     std::vector<std::tuple<std::string,COLLISON_FUNC,COLL_HANDLER_FUNC> > coll_pair;
     
-    static std::map<std::string,std::reference_wrapper<ColliderComponent>> colliders;
+    static std::map<std::string,ColliderComponent*> colliders;
 
     COLLIDER_UPDATE_FUNC CUF = ColliderUpdateFunc::TransfromBasicCollider;
 
     ColliderComponent(std::string tag) : tag(tag) {}
     ColliderComponent(std::string tag, COLLIDER_UPDATE_FUNC update_func) : tag(tag), CUF(update_func) {}
+    ~ColliderComponent()
+    {
+        colliders.erase(tag);
+    }
     
     void init() override
     {
@@ -50,7 +54,7 @@ struct ColliderComponent : public Component
         transform = &entity->getComponent<TransformComponent>();
         sprite = &entity->getComponent<SpriteComponent>();
 
-        colliders.emplace(tag,*this);
+        colliders.emplace(tag,this);
     }
 
     void update() override
@@ -58,9 +62,9 @@ struct ColliderComponent : public Component
         CUF(*this);
         for(auto &cp : coll_pair)
         {
-            auto c = colliders.at(std::get<std::string>(cp)).get();
-            if(std::get<COLLISON_FUNC>(cp)(*this,c))
-                std::get<COLL_HANDLER_FUNC>(cp)(*entity,*c.entity);
+            auto c = colliders.at(std::get<std::string>(cp));
+            if(std::get<COLLISON_FUNC>(cp)(*this,*c))
+                std::get<COLL_HANDLER_FUNC>(cp)(*entity,*c->entity);
         }
     }
 

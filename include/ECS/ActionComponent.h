@@ -1,5 +1,11 @@
 #pragma once
-#include "Components.h"
+#include "ECS/ECS.h"
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
+#include "KeyboardComponent.h"
+#include "ColliderComponent.h"
+#include "SpawnComponent.h"
+#include "ScoreComponent.h"
 
 
 class MainAction : public Component
@@ -9,6 +15,7 @@ private:
     TransformComponent *transformString;
     SpriteComponent *spriteString;
     ColliderComponent *colliderString; 
+    ScoreComponent *scoreString;
     
     
     Entity& Player;
@@ -18,6 +25,8 @@ private:
 
 
 
+
+    
 
   
 public:
@@ -39,6 +48,7 @@ public:
         transformString = &entity->getComponent<TransformComponent>();
         spriteString = &entity->getComponent<SpriteComponent>();
         colliderString =&entity->getComponent<ColliderComponent>();
+        scoreString =&entity->getComponent<ScoreComponent>();
         spriteString->spriteFlip=SDL_FLIP_VERTICAL;
         transformString->position.y=0;
     }
@@ -64,7 +74,10 @@ public:
                 keyboardPlayer->isActionTime=false;
                 keyboardPlayer->first=true;
                 spritePlayer->Play("Idle");
-
+                if(spriteFish->curAnim == "Catched_Emerald")
+                    scoreString->PlusScore(5);
+                else if(spriteFish->curAnim == "Catched_Purple")
+                    scoreString->PlusScore(10);
                 Catched = false;
                 CurFish->getComponent<SpawnComponent>().RandPos();
             }

@@ -1,22 +1,30 @@
 #pragma once 
 #include "SceneManager.h"
-#include "Collision.h"
+#include "ECS/Components.h"
+#include "Game.h"
 
 class Scene_Game : public Scene
 {
 private:
     enum groupRenderLabels : size_t
     {
-        groupBack, groupPlayer, groupString, groupFishies, groupWaves, groupFilter, GROUP_COUNT
+        groupBack, groupPlayer, groupText,groupString, groupFishies, groupWaves, groupFilter, groupPause, GROUP_COUNT
     };
     enum Entities : size_t
     {
-        BackPic, Cloud_L, Cloud_M, Cloud_R, Waves, Player, String, Filter, First_Fish=8, Last_Fish=18 , ENTITIES_COUNT
+        BackPic, Cloud_L, Cloud_M, Cloud_R, Timer, Name, Score,Waves, Player, String, Filter, First_Fish=11, Last_Fish=21 , Resume, Exit, Cursor, GameOver, PressEnter, ENTITIES_COUNT
     };
+    SDL_Color color={255,255,255};
+    bool startTimer=false;
+    bool Paused=false;
+    bool END=false;
 public:
-    Scene_Game(Manager* manager) : Scene(manager) {};
+    explicit Scene_Game(Manager* manager) : Scene(manager) {};
     void init() override
     {
+        startTimer=false;
+        Paused=false;
+        END=false;
         for(size_t i=0; i < ENTITIES_COUNT; i++)
         {
             EntitiesVector.push_back(this->manager.addEntity());
@@ -55,7 +63,25 @@ public:
         EntitiesVector[Filter].get().addComponent<SpriteComponent>("assets/water.png");
         EntitiesVector[Filter].get().getComponent<SpriteComponent>().setAlpha(70);
         EntitiesVector[Filter].get().addGroup(groupFilter);
+        
+        ////////
+        ///ui
+        /////
+        EntitiesVector[Timer].get().addComponent<LabelInterface>(125,95, " ", "assets/ka1.ttf", 20,color,0).SetText();
+        EntitiesVector[Timer].get().addComponent<TimerComponent>(20);
+        EntitiesVector[Timer].get().addGroup(groupText);
 
+        EntitiesVector[Name].get().addComponent<LabelInterface>(360,95,Game::score_table.getName(), "assets/ka1.ttf", 20,color, 0);
+        EntitiesVector[Name].get().getComponent<LabelInterface>().SetText();
+        EntitiesVector[Name].get().addGroup(groupText);
+        EntitiesVector[Score].get().addComponent<LabelInterface>(630,95," ","assets/ka1.ttf", 20, color, 0).SetText();
+        EntitiesVector[Score].get().addGroup(groupText);
+
+        EntitiesVector[GameOver].get().addComponent<LabelInterface>(0,200,"Game Over", "assets/ka1.ttf", 30,color,2).SetText();
+        EntitiesVector[GameOver].get().addGroup(groupPause);
+
+        EntitiesVector[PressEnter].get().addComponent<LabelInterface>(0,300,"Press Enter to exit", "assets/ka1.ttf", 30,color,2).SetText();
+        EntitiesVector[PressEnter].get().addGroup(groupPause);
         /////////////////
         ///Player
         ////////////////
@@ -76,8 +102,10 @@ public:
         EntitiesVector[String].get().addComponent<ColliderComponent>("String", ColliderUpdateFunc::TransfromHOOKCollider);
         EntitiesVector[String].get().addGroup(groupString);
 
-
+        EntitiesVector[String].get().addComponent<ScoreComponent>(EntitiesVector[Score].get());
         EntitiesVector[String].get().addComponent<MainAction>(EntitiesVector[Player].get());
+        
+        
 
         ////////////////
         ////Fishies
@@ -98,14 +126,73 @@ public:
             EntitiesVector[Fish_ID].get().getComponent<ColliderComponent>().MakeCollPair("String",Collision::AABB, ColHandler::ChainFishPosition);
             EntitiesVector[Fish_ID].get().addComponent<SpawnComponent>().RandPos();
             EntitiesVector[Fish_ID].get().addGroup(groupFishies);
-        }
+        }        
+        LabelInterface::MakeActiveGroup(0);
 
+        EntitiesVector[Resume].get().addComponent<LabelInterface>(340,220,"Resume", "assets/ka1.ttf", 30, color, 1).SetText();
+        EntitiesVector[Exit].get().addComponent<LabelInterface>(340,300,"Exit", "assets/ka1.ttf", 30, color,1).SetText();
+        EntitiesVector[Resume].get().addGroup(groupPause);
+        EntitiesVector[Exit].get().addGroup(groupPause);
+        
+        EntitiesVector[Cursor].get().addComponent<TransformComponent>(0.0f,0.0f,32,32,2);
+        EntitiesVector[Cursor].get().addComponent<SpriteComponent>("assets/MenuCursor.png", false);
+        EntitiesVector[Cursor].get().addComponent<SubMenuController>(0,1);
+        EntitiesVector[Cursor].get().addGroup(groupPause);
+        EntitiesVector[Cursor].get().Hold();
 
     }
+    void eventHandler() override
+    {
+        if(LabelInterface::isActiveGroup(2))
+        {
+            END=true;
+            if(Game::event.key.keysym.sym == SDLK_RETURN)
+            {
+                EntitiesVector[GameOver].get().sceneManager.changeActiveScene(0);
+                Game::score_table.PushScore(EntitiesVector[String].get().getComponent<ScoreComponent>().getScore());
+                Game::score_table.UpdateFile();
+            }
+        }
+        
+        if(Paused&&!EntitiesVector[Cursor].get().getComponent<TransformComponent>().isActive)
+        {
+            EntitiesVector[Timer].get().getComponent<TimerComponent>().unpause();
+            Paused=false;
+        }
+        if(Game::event.type==SDL_KEYDOWN && !END)
+        {
+            switch(Game::event.key.keysym.sym)
+            {
+                case SDLK_SPACE:
+                    if(!startTimer)
+                    {
+                        EntitiesVector[Timer].get().getComponent<TimerComponent>().start();
+                        startTimer=true;
+                    }       
+                    break;
+                case SDLK_ESCAPE:
+                    if(!EntitiesVector[Cursor].get().getComponent<TransformComponent>().isActive)
+                    {
+                        for(auto &e:EntitiesVector)
+                        {
+                            e.get().FreezeEntity();
+                        }
+                        LabelInterface::MakeActiveGroup(1);
+                        EntitiesVector[Cursor].get().unHold();
+                        EntitiesVector[Cursor].get().UnFreezeEntity();
+                        Paused=true;
+                        EntitiesVector[Timer].get().getComponent<TimerComponent>().pause();
+                    }
+                    break;
+            
+            }
+
+        }
+    }
+    
     void update() override
     {
-        manager.refresh();
-        manager.update();
+        
 
     }
     void render() override
@@ -121,6 +208,7 @@ public:
     }
     void destroy() override
     {
+        EntitiesVector.clear();
         manager.destroy();
     }
 
