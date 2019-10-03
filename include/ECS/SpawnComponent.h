@@ -2,6 +2,7 @@
 #include "ECS/ECS.h"
 #include "ECS/SpriteComponent.h"
 #include "ECS/TransformComponent.h"
+#include "ECS/AppleComponent.h"
 #include "Game.h"
 #include <random>
 
@@ -11,6 +12,7 @@ class SpawnComponent : public Component
 private:
     TransformComponent *transform;
     SpriteComponent *sprite;
+    AppleComponent *apple;
     std::random_device rd;
     std::mt19937 gen;
     int left = 300;
@@ -25,50 +27,33 @@ public:
     {
         transform = &entity->getComponent<TransformComponent>();
         sprite = &entity->getComponent<SpriteComponent>();
-        left = h/2;
-        right = h - transform->height;
+        apple = &entity->getComponent<AppleComponent>();
+
+        left = 0;
+        right = w;
     }
     void RandPos()
     {
+        transform->position.y = 0;
         std::uniform_int_distribution<int> uid_pos(left,right);
-        transform->position.y = static_cast<int>(uid_pos(gen));
+        transform->position.x = static_cast<int>(uid_pos(gen));
 
         std::uniform_int_distribution<> uid_speed(1,4);
         transform->speed = uid_speed(gen);
 
         std::uniform_int_distribution<> uid_type_side(0,1);
         auto type = uid_type_side(gen);
-        if(type)
-        {
-            auto side = uid_type_side(gen);
-            if(side)
-            {
-                transform->position.x = w;
-                transform->velocity.x = -1;
-                sprite->spriteFlip = SDL_FLIP_NONE;
-            }
-            else 
-            {
-                transform->position.x = 0.0f-transform->scale*transform->width;
-                transform->velocity.x = 1;
-                sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-            }
+        transform->velocity.y = 1;
             if(uid_type_side(gen))
             {
-                sprite->Play("Idle_Purple");
+                sprite->Play("Good_Apple");
+                apple->SetPoint(5);
             }
             else
             {
-                sprite->Play("Idle_Emerald");
+                sprite->Play("Bad_Apple");
+                apple->SetPoint(-10);
             }
-        }
-        else
-        {
-            transform->position.x = w;
-            transform->velocity.x = -1;
-            sprite->spriteFlip = SDL_FLIP_NONE;
-            sprite->Play("Idle_Rubbish");
-        }
-    }
 
+    }
 };

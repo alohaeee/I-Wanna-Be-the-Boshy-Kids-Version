@@ -29,7 +29,7 @@ struct ColliderComponent : public Component
     SpriteComponent *sprite;
     
     std::string tag;
-    bool debug = true;
+    bool debug = false;
     
 
     std::vector<std::tuple<std::string,COLLISON_FUNC,COLL_HANDLER_FUNC> > coll_pair;

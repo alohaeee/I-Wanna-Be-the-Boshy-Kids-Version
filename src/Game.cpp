@@ -61,6 +61,12 @@ void Game::init(const char* title, int w, int h, bool fullscreen)
             else std::cout << "Render color was set!" << std::endl;
             //SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
         } 
+        if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) throw MyException(Mix_GetError(), -22);
+        else
+        {
+            std::cout << "Mixer initialize succesfully!" << std::endl;
+        }
+        
 
         SDL_Surface *icon = IMG_Load("ss22.png");
         if(icon == nullptr) throw MyException(IMG_GetError(), -33);
@@ -117,10 +123,12 @@ void Game::render()
 
 void Game::destroy()
 {
+    score_table.distruct();
     delete manager;
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    Mix_CloseAudio();
     SDL_Quit();
     std::cout << "Game cleaned!" << std::endl;
     

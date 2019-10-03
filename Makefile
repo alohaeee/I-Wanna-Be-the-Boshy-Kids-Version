@@ -6,7 +6,7 @@ SRC		:= src
 INCLUDE	:= include
 LIB		:= lib
 
-LIBRARIES	:= -lSDL2 -lSDL2_image  -lSDL2_ttf
+LIBRARIES	:= -lSDL2 -lSDL2_image  -lSDL2_ttf -lSDL2_mixer
 EXECUTABLE	:= main
 
 

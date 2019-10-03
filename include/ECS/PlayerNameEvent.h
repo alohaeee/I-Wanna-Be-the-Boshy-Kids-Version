@@ -10,27 +10,22 @@
 class PlayerNameEvent : public Component
 {
 private:
-    Entity& Player;
-    SpriteComponent* spritePlayer;
-    TransformComponent* transformPlayer;
     TransformComponent* transformCursor;
     LabelInterface* label;
     bool goPLAY=false;
     std::string Text;
-    size_t Max=12;
+    size_t Max=8;
     SDL_Rect Pos;
     LabelID TypedID;
 
     bool isPressed = false;
 public:
-    PlayerNameEvent(Entity &Player, LabelID id) : Player(Player), TypedID(id) {
+    PlayerNameEvent(LabelID id) : TypedID(id) {
     }
 
     void init() override
     {
         transformCursor = &entity->getComponent<TransformComponent>();
-        transformPlayer = &Player.getComponent<TransformComponent>();
-        spritePlayer=&Player.getComponent<SpriteComponent>();
         label=LabelInterface::LabelsVector[2][TypedID];
         
     }
@@ -62,8 +57,8 @@ public:
                 {
                     if(Text.size()>0 && Text!="\n"){
                         goPLAY=true;
-                        spritePlayer->srcRect.x = 0;
-                        spritePlayer->Play("Play");
+                        //spritePlayer->srcRect.x = 0;
+                        //spritePlayer->Play("Play");
                     }
                 }
                 Pos = label->GetPos();
@@ -79,12 +74,9 @@ public:
         }
         else
         {
-            if(spritePlayer->srcRect.x < (spritePlayer->frames-1)*transformPlayer->width);
-            else 
-            {   
+
                 Game::score_table.PushName(Text);
                 entity->sceneManager.changeActiveScene(1);
-            }
         }
         
     }

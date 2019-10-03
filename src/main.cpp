@@ -17,14 +17,7 @@ int main()
     //init game
     game = new Game();
     try{
-        game->init("Fishing for fishies", 800, 600, false);
-    }
-    catch(MyException &e)
-    {
-        game->destroy();
-        std::cerr << e.GetError() << std::endl;
-        return e.GetVal();
-    };
+    game->init("Fishing for fishies", 800, 600, false);
     
     while(game->running())
     {
@@ -40,6 +33,13 @@ int main()
             SDL_Delay(frameDelay-frameTime);
         }
     }
+
+    }catch(MyException &e)
+    {
+        game->destroy();
+        std::cerr << e.GetError() << std::endl;
+        return e.GetVal();
+    };
 
 
     game->destroy();

@@ -28,7 +28,8 @@ public:
 
 
     SDL_Rect srcRect, dstRect; 
-    std::string curAnim;
+    std::string 
+    curAnim;
     std::map<std::string, std::unique_ptr<Animation>> animations;
     
     SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;

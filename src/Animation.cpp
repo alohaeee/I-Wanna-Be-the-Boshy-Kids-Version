@@ -20,5 +20,4 @@ void AnimationFunctions::PlusAnimation(SDL_Rect &src, int frames, int speed)
         src.x+=src.w;
         prev = cur;
     }
-    //src.x = (src.x + (SDL_GetTicks()%speed==0 ? src.w : 0))%(frames*src.w-src.w);
 }

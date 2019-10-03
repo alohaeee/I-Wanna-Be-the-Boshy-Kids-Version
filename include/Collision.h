@@ -23,4 +23,5 @@ namespace ColHandler
     void LeftVelocityZero(Entity& Left, Entity& Right);
     void ReRandPosFishies(Entity& Left, Entity& Right);
     void ChainFishPosition(Entity& Left, Entity& Right);
+    void BasketCollision(Entity& Left, Entity& Right);
 }

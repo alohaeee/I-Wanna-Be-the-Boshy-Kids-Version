@@ -93,3 +93,11 @@ void ColHandler::ChainFishPosition(Entity& Left, Entity& Right)
     }
 }
 
+void ColHandler::BasketCollision(Entity& Left, Entity& Right)
+{
+    auto scoreComponent = &Right.getComponent<ScoreComponent>();
+    auto appleComponent = &Left.getComponent<AppleComponent>();
+    scoreComponent->PlusScore(appleComponent->GetScore());
+    Left.getComponent<SpawnComponent>().RandPos();
+}
+

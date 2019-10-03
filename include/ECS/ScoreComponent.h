@@ -1,6 +1,7 @@
 #pragma once
 #include "ECS.h"
 #include "LabelInterface.h"
+#include <iostream>
 
 class ScoreComponent : public Component
 {
@@ -21,6 +22,7 @@ public:
             LI->SetText();
             last_score=score;
         }
+        std::cout << score << std::endl;
     }
     int getScore()
     {
@@ -29,5 +31,6 @@ public:
     void PlusScore(int s)
     {
         score+=s;
+        std::cout << "aa" << score << std::endl;
     }
 };

@@ -4,6 +4,7 @@
 #include "LabelInterface.h"
 #include "SpriteComponent.h"
 #include "PlayerNameEvent.h"
+#include "AudioComponent.h"
 #include "../Game.h"
 
 
@@ -14,6 +15,7 @@ private:
     TransformComponent* transformCursor;
     SpriteComponent* spriteCursor;
     PlayerNameEvent* nameEventCursor;
+    AudioComponent* audioCursor;
     LabelID Begin, End;
     LabelID Cur;
     SDL_Rect Pos;
@@ -32,6 +34,7 @@ public:
         transformCursor = &entity->getComponent<TransformComponent>();
         spriteCursor = &entity->getComponent<SpriteComponent>();
         nameEventCursor = &entity->getComponent<PlayerNameEvent>();
+        audioCursor = &entity->getComponent<AudioComponent>();
         transformCursor->position.x = Pos.x + Pos.w;
         transformCursor->position.y = Pos.y;
     }
@@ -42,6 +45,7 @@ public:
         transformCursor->position.y = Pos.y;
         if(Game::event.type == SDL_KEYDOWN)
         {
+            audioCursor->Play();
             if(!isPressed&&flag)
             {
                 switch(Game::event.key.keysym.sym)
@@ -57,6 +61,7 @@ public:
                     case SDLK_DOWN:
                         if(Cur<End)
                         {
+                            
                             isPressed = true;
                             Cur++;
                         }

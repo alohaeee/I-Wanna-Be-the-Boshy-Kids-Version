@@ -66,11 +66,9 @@ public:
             change=false;
         }
         SceneArray[activeScene]->eventHandler();
-    }
+    };
     void update()
     {
-        
-        SceneArray[activeScene]->manager.refresh();
         SceneArray[activeScene]->manager.update();
         SceneArray[activeScene]->update();
     };
