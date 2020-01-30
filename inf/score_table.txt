@@ -1,4 +1,10 @@
+gamer
+90
 unity
+60
+fox
+60
+fdfdfs
 60
 dsd
 50
@@ -8,9 +14,3 @@ qwerty
 45
 ds2
 40
-ssss
-30
-dasd
-20
-j
-10

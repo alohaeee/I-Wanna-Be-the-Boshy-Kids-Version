@@ -17,7 +17,7 @@ int main()
     //init game
     game = new Game();
     try{
-    game->init("Fishing for fishies", 800, 600, false);
+    game->init("I Wanna Be the Boshy kids wersion", 800, 600, false);
     
     while(game->running())
     {
