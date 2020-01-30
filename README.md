@@ -20,4 +20,3 @@ A,D - to move basket;
 * <a href="https://www.libsdl.org/projects/SDL_image">SDL2 image</a>
 * <a href="https://www.libsdl.org/projects/SDL_ttf/">SDL2 ttf</a>
 * <a href="https://www.libsdl.org/projects/SDL_mixer/">SDL2 mixer</a>
-## Assets 
